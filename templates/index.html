@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Cancer Day - Epiconsult</title>
+
+  <!-- Google Fonts + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: "#002F5E",
+            redbrand: "#dc2626",
+          },
+          fontFamily: {
+            poppins: ["Poppins", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Global + Page Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}">
+</head>
+<body class="font-poppins text-gray-800">
+
+  <!-- ================= HEADER ================= -->
+  <header class="bg-white/95 shadow sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center px-4 py-3">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3">
+        <img src="{{ url_for('static', filename='images/logo.jpeg') }}"
+             alt="Epiconsult Logo"
+             class="h-12 w-auto object-contain">
+        <div>
+          <h1 class="font-bold text-2xl text-redbrand">Epiconsult</h1>
+          <h2 class="font-semibold text-lg text-navy">Clinic & Diagnostics</h2>
+          <p class="text-gray-600 italic text-sm">...a reference point in diagnostics</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="hidden md:flex space-x-8 text-navy font-medium">
+        <a href="#" class="hover:text-redbrand" data-nav="home">Home</a>
+        <a href="#" class="hover:text-redbrand" data-nav="about">About</a>
+        <a href="#" class="hover:text-redbrand" data-nav="contact">Contact</a>
+        <a href="{{ url_for('index') }}#epicare" class="hover:text-redbrand">Epicare Assistant</a>
+      </nav>
+    </div>
+  </header>
+
+<!-- ================= HERO SLIDER ================= -->
+<section class="relative overflow-hidden">
+  <div class="h-[420px] relative">
+    {% for i in range(1,8) %}
+    <div class="hero-slide {% if loop.first %}active{% endif %}">
+      <img src="{{ url_for('static', filename='images/' ~ i ~ '.jpg') }}"
+           alt="Cancer Awareness {{ i }}"
+           class="w-full h-full object-cover">
+    </div>
+    {% endfor %}
+
+    <!-- Overlay Content (Permanent) -->
+    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4 z-20">
+      <h1 class="text-3xl md:text-5xl font-bold mb-3 hero-text">World Cancer Day</h1>
+      <p class="max-w-2xl text-lg md:text-xl mb-6">
+        Join Epiconsult in spreading awareness and providing access to early diagnosis and care.
+      </p>
+
+      <!-- Buttons (Permanent, animated on load) -->
+      <div class="flex flex-col sm:flex-row gap-4 hero-buttons">
+        <a href="#registration"
+           class="bg-redbrand hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition text-center">
+          Register
+        </a>
+        <a href="{{ url_for('index') }}#epicare"
+           class="bg-navy hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition text-center">
+          Epicare Assistant
+        </a>
+        <a href="#video"
+           class="bg-white hover:bg-gray-200 text-navy font-semibold px-6 py-3 rounded-lg shadow-lg transition text-center">
+          Watch Video
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- ================= BACKGROUND IMAGE START ================= -->
+  <main class="bg-cover bg-fixed bg-center"
+        style="background-image: url('{{ url_for('static', filename='images/background.jpg') }}')">
+
+    <!-- Awareness Section -->
+    <section class="py-12 px-4 bg-white/95">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-redbrand mb-4">Close the Care Gap</h2>
+        <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto">
+          Every year, millions of lives are lost to cancer due to late detection and lack of access to quality healthcare.  
+          This World Cancer Day, Epiconsult is committed to bridging the gap with free screenings, awareness campaigns, and diagnostic support.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+        <div class="special-card zoom-effect bg-navy text-white p-6 rounded-2xl">
+          <i class="fa-solid fa-stethoscope text-4xl mb-3"></i>
+          <h3 class="text-xl font-semibold mb-2">Free Health Checks</h3>
+          <p>Get free health consultations and screenings during the campaign.</p>
+        </div>
+        <div class="special-card zoom-effect bg-redbrand text-white p-6 rounded-2xl">
+          <i class="fa-solid fa-ribbon text-4xl mb-3"></i>
+          <h3 class="text-xl font-semibold mb-2">Cancer Awareness</h3>
+          <p>Learn more about prevention, early signs, and treatment options.</p>
+        </div>
+        <div class="special-card zoom-effect bg-navy text-white p-6 rounded-2xl">
+          <i class="fa-solid fa-users text-4xl mb-3"></i>
+          <h3 class="text-xl font-semibold mb-2">Community Support</h3>
+          <p>Be part of a movement dedicated to saving lives together.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Epicare Assistant Section -->
+    <section id="epicare" class="py-16 px-4 text-center bg-white/90">
+      <h2 class="text-3xl font-bold text-navy mb-4">Meet <span class="text-redbrand">Epicare</span> Assistant</h2>
+      <p class="max-w-2xl mx-auto text-gray-600 mb-8">Your virtual health companion. Get instant help and guidance.</p>
+      <a href="{{ url_for('index') }}epicare.html"
+         class="inline-block bg-redbrand text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-red-700 transition">
+        Try Epicare Assistant
+      </a>
+    </section>
+
+    <!-- Posters Section -->
+    <section class="py-16 px-4 bg-white/95">
+      <h2 class="text-2xl font-bold text-center text-navy mb-10">Awareness Posters</h2>
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div class="poster-card bg-gray-100 rounded-xl shadow-lg h-80 flex items-center justify-center">
+          <span class="text-gray-500">Poster 1 (Coming Soon)</span>
+        </div>
+        <div class="poster-card bg-gray-100 rounded-xl shadow-lg h-80 flex items-center justify-center">
+          <span class="text-gray-500">Poster 2 (Coming Soon)</span>
+        </div>
+      </div>
+    </section>
+
+<!-- Video Section -->
+<section id="video" class="py-16 px-4 bg-white/95">
+  <h2 class="text-2xl font-bold text-center text-navy mb-10">Watch Our Awareness Video</h2>
+  <div class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
+    <div class="aspect-w-16 aspect-h-9">
+      <iframe class="w-full h-[480px]" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="World Cancer Day Awareness"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+
+    <!-- Registration Section -->
+    <section id="registration" class="py-16 px-4">
+      <div class="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-navy mb-2">Register for World Cancer Day</h2>
+        <p class="text-gray-600 mb-6">Sign up now to receive free offers and updates from Epiconsult.</p>
+
+        <form id="cancerDayForm" class="space-y-5">
+          <div>
+            <label for="full-name" class="block text-sm font-medium">Full Name</label>
+            <input type="text" id="full-name" name="full_name" required
+                   class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required
+                   class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium">Email Address</label>
+            <input type="email" id="email" name="email" required
+                   class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
+          </div>
+          <button type="submit"
+                  class="w-full bg-navy text-white py-2 rounded-lg hover:bg-redbrand transition">
+            Register Now
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-navy text-white py-12">
+    <div class="container mx-auto px-4 text-center">
+      <div class="flex flex-col items-center mb-6">
+        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" 
+             alt="Epiconsult Logo" 
+             class="h-12 w-auto object-contain mb-3">
+        <h3 class="font-bold text-xl">
+          <span class="text-redbrand">Epiconsult</span>
+          <span class="text-white"> Clinic & Diagnostics</span>
+        </h3>
+        <p class="text-gray-300 text-sm italic">...a reference point in diagnostics</p>
+      </div>
+      <p class="text-gray-400 mb-2">Committed to providing quality diagnostics and patient-centered care.</p>
+      <p class="text-gray-400 text-sm">© {{ current_year }} Epiconsult Diagnostics. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Animate hero buttons on page load
+    window.addEventListener("load", () => {
+      const buttons = document.querySelector(".hero-buttons");
+      if (buttons) buttons.classList.add("visible");
+    });
+  </script>
+  <script type="module" src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>
