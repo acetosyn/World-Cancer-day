@@ -3,25 +3,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------- DOM HOOKS ----------
   const micButton = document.getElementById("voice-toggle") || document.getElementById("mic-button");
   const micIcon = micButton?.querySelector("i");
-  const languageSelect = document.getElementById("language-select");
   const userInput = document.getElementById("user-input");
   const sendButton = document.getElementById("send-btn");
   const messagesContainer = document.getElementById("messages");
-
   const conversationRef = window.conversation || [];
 
   // ---------- UTILITIES ----------
   const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  let isSpeaking = false; // ✅ prevents mic from capturing bot TTS
 
   function findBotAvatar(node) {
     return node?.querySelector?.('img[src*="bot.jpg"], img[src*="bot.png"], img[src*="bot.svg"]');
   }
 
   function getBotTextContainer(node) {
-    if (!findBotAvatar(node)) return null; // ✅ only bot rows
+    if (!findBotAvatar(node)) return null;
     const bubbles = node.querySelectorAll("div");
     if (!bubbles.length) return null;
-    return bubbles[bubbles.length - 1]; // last div = bubble text
+    return bubbles[bubbles.length - 1];
   }
 
   function renderInitialMessageFallback() {
@@ -34,8 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     avatar.className = "w-10 h-10 rounded-full shadow";
 
     const msg = document.createElement("div");
-    msg.className = "bg-gradient-to-r from-redbrand to-pink-600 text-white p-3 rounded-xl shadow max-w-[75%]";
-    msg.textContent = "👋 Hi, I'm Epicare — your virtual health assistant. How can I help you today?";
+    msg.className =
+      "bg-gradient-to-r from-redbrand to-pink-600 text-white p-3 rounded-xl shadow max-w-[75%]";
+    msg.textContent =
+      "👋 Hi, I'm Epicare — your virtual health assistant. How can I help you today?";
 
     row.appendChild(avatar);
     row.appendChild(msg);
@@ -47,15 +48,21 @@ document.addEventListener("DOMContentLoaded", () => {
   function cacheBestVoice() {
     const voices = window.speechSynthesis.getVoices();
     const preferred = [
-      "Google UK English Female","Google US English",
-      "Microsoft Aria Online","Microsoft Jenny Online","Microsoft Zira Desktop",
-      "Samantha","Karen","Moira"
+      "Google UK English Female",
+      "Google US English",
+      "Microsoft Aria Online",
+      "Microsoft Jenny Online",
+      "Microsoft Zira Desktop",
+      "Samantha",
+      "Karen",
+      "Moira",
     ];
     bestVoice =
       voices.find((v) => preferred.some((n) => v.name.includes(n))) ||
       voices.find((v) => v.lang?.startsWith("en") && v.name?.toLowerCase().includes("female")) ||
       voices.find((v) => v.lang?.startsWith("en")) ||
-      voices[0] || null;
+      voices[0] ||
+      null;
   }
 
   function sanitizeTTS(text) {
@@ -63,6 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/([\u231A-\uDFFF])/g, "")
       .replace(/__FETCH_FROM_[A-Z]+__/g, "")
       .replace(/\s{2,}/g, " ")
+      // ✅ strip unwanted UI phrases
+      .replace(/\bBack to Home\b/gi, "")
+      .replace(/\bClear Chat\b/gi, "")
+      .replace(/\bListening\b/gi, "")
       .trim();
   }
 
@@ -76,6 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
     utter.voice = bestVoice || null;
     utter.pitch = 1.1;
     utter.rate = 1.05;
+
+    utter.onstart = () => (isSpeaking = true);
+    utter.onend = () => (isSpeaking = false);
 
     if (synth.speaking) synth.cancel();
 
@@ -111,11 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let recognition = null;
   let isListening = false;
   let micHasSpokenOnce = false;
+  let speechTimeout = null; // ✅ idle detection
 
   if (SpeechRecognition) {
     recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.continuous = true; // ✅ allow natural pauses
+    recognition.interimResults = true;
     recognition.lang = "en-US";
 
     recognition.onstart = () => {
@@ -130,14 +145,23 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Speech recognition error:", e.error);
       isListening = false;
       micButton?.classList?.remove("recording", "text-red-500");
-      alert("⚠ Speech recognition error. Try again.");
     };
     recognition.onresult = (event) => {
-      const transcript = event.results?.[0]?.[0]?.transcript?.trim();
-      if (transcript) {
+      if (isSpeaking) return; // ✅ ignore bot voice
+      
+      const transcript = Array.from(event.results)
+        .map((res) => res[0].transcript)
+        .join(" ")
+        .trim();
+
+      if (!transcript) return;
+
+      clearTimeout(speechTimeout);
+      speechTimeout = setTimeout(() => {
         userInput.value = transcript;
         sendButton?.click?.();
-      }
+        recognition.stop();
+      }, 2000); // ✅ 2s pause = final input
     };
   }
 
@@ -161,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (ok) {
           recognition.start();
           if (!micHasSpokenOnce) {
-            initTTS("Listening"); // ✅ only first click
+            initTTS("Listening"); // ✅ plays only once
             micHasSpokenOnce = true;
           }
         }
@@ -171,8 +195,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  micButton?.addEventListener("click", (e) => { e.preventDefault(); toggleRecognition(); });
-  micIcon?.addEventListener("click", (e) => { e.preventDefault(); toggleRecognition(); });
+  micButton?.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleRecognition();
+  });
+  micIcon?.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleRecognition();
+  });
 
   // ---------- BOT TTS ----------
   const speakTimers = new WeakMap();
@@ -239,7 +269,9 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       let initialNode = [...messagesContainer.children].find((c) => c.dataset?.initial === "true");
       if (initialNode) {
-        [...messagesContainer.children].forEach((c) => { if (c !== initialNode) c.remove(); });
+        [...messagesContainer.children].forEach((c) => {
+          if (c !== initialNode) c.remove();
+        });
       } else {
         messagesContainer.innerHTML = "";
         renderInitialMessageFallback();
