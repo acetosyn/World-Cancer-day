@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Epicare Assistant — Epiconsult</title>
+
+  <!-- Fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: "#1e3a5f",
+            redbrand: "#dc2626",
+          },
+          fontFamily: {
+            poppins: ["Poppins", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/epicare.css') }}">
+</head>
+<body class="font-poppins bg-navy text-white flex flex-col min-h-screen">
+
+  <!-- ================= HEADER ================= -->
+  <header class="bg-white/95 shadow sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center px-4 py-3">
+      <!-- Logo (clickable) -->
+      <a href="{{ url_for('index') }}" class="flex items-center space-x-3">
+        <img src="{{ url_for('static', filename='images/logo.jpeg') }}"
+             alt="Epiconsult Logo"
+             class="h-12 w-auto object-contain">
+        <div>
+          <h1 class="font-bold text-2xl text-redbrand">Epiconsult</h1>
+          <h2 class="font-semibold text-lg text-navy">Clinic & Diagnostics</h2>
+          <p class="text-gray-600 italic text-sm">...a reference point in diagnostics</p>
+        </div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="hidden md:flex space-x-8 text-navy font-medium">
+        <a href="{{ url_for('index') }}" class="hover:text-redbrand">Home</a>
+        <a href="#about" class="hover:text-redbrand">About</a>
+        <a href="#contact" class="hover:text-redbrand">Contact</a>
+        <a href="{{ url_for('epicare') }}" class="hover:text-redbrand">Epicare Assistant</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 flex px-4 py-4 gap-4">
+    <!-- Conversation panel -->
+    <aside class="w-1/6 bg-white/10 rounded-xl p-3 overflow-y-auto hidden md:flex flex-col">
+      <h3 class="text-base font-semibold text-redbrand mb-2">Conversations</h3>
+      <ul id="conversation-list" class="space-y-2 text-sm flex-1">
+        <li><button class="conv-btn">General Health</button></li>
+        <li><button class="conv-btn">Lab Tests</button></li>
+        <li><button class="conv-btn">Medications</button></li>
+        <li><button class="conv-btn">Diagnostics</button></li>
+      </ul>
+    </aside>
+
+    <!-- Chat panel -->
+    <section class="flex-1 flex flex-col">
+      <div id="chat-window" class="flex-1 bg-white/10 rounded-xl p-4 overflow-y-auto">
+        <!-- Messages -->
+        <div id="messages" class="space-y-4">
+          <div class="flex items-start gap-3">
+            <img src="{{ url_for('static', filename='images/bot.jpg') }}" alt="Bot"
+                 class="w-9 h-9 rounded-full shadow">
+            <div class="bg-gradient-to-r from-redbrand to-pink-600 text-white p-3 rounded-xl max-w-[70%] text-sm leading-relaxed">
+              👋 Hi, I'm <strong>Epicare</strong> — your virtual health assistant.  
+              Tell me your concern, upload a file, or try voice input.
+            </div>
+          </div>
+        </div>
+
+        <!-- Typing indicator -->
+        <div id="typing-indicator" class="hidden mt-3 flex items-center gap-2">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span class="text-xs text-gray-300">Epicare is typing…</span>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div class="chat-input mt-3 flex items-center gap-2">
+        <button id="voice-toggle" type="button" class="icon-btn" title="Voice">
+        <i class="fa-solid fa-microphone"></i>
+        </button>
+
+
+        <input id="user-input" type="text" placeholder="Ask Epicare anything..."
+               class="flex-1 bg-transparent outline-none px-2 text-sm text-white placeholder-gray-300"
+               autocomplete="off">
+
+        <button id="attach-btn" class="icon-btn" title="Upload">
+          <i class="fa-solid fa-paperclip"></i>
+        </button>
+
+        <button id="send-btn" class="send-btn">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+
+      <!-- Back to Home Button -->
+      <div class="mt-4 text-center">
+        <a href="{{ url_for('index') }}"
+           class="inline-block bg-white text-navy font-semibold px-4 py-2 rounded-lg shadow hover:bg-gray-200 transition">
+          ← Back to Home
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-navy text-white py-6 mt-4">
+    <div class="container mx-auto px-4 text-center">
+      <img src="{{ url_for('static', filename='images/logo.jpeg') }}"
+           alt="Epiconsult Logo"
+           class="h-10 w-auto object-contain mx-auto mb-2">
+      <h3 class="font-bold text-base">
+        <span class="text-redbrand">Epiconsult</span> Clinic & Diagnostics
+      </h3>
+      <p class="text-gray-300 text-xs italic">...a reference point in diagnostics</p>
+      <p class="text-gray-400 text-xs mt-1">© {{ current_year }} Epiconsult Diagnostics. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/epicare.js') }}"></script>
+  
+  <script src="{{ url_for('static', filename='js/epicare2.js') }}"></script>
+</body>
+</html>

@@ -9,6 +9,10 @@
   --transition: all 0.3s ease;
 }
 
+/* Utility colors (used by your HTML classes) */
+.text-navy { color: var(--navy); }
+.bg-navy { background-color: var(--navy); }
+
 /* ---------------- HERO SLIDER ---------------- */
 .hero-slide {
   position: absolute;
@@ -33,13 +37,10 @@
 .hero-buttons {
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeUp 1s ease forwards 1s; /* delay 1s */
+  animation: fadeUp 1s ease forwards 1s;
 }
 @keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ---------------- ZOOM CARDS ---------------- */
@@ -62,54 +63,25 @@
   text-align: center;
   animation: floatUp 0.6s ease forwards;
 }
-.registration-card h2 {
-  font-size: 1.6rem;
-  color: var(--navy);
-}
-.registration-card p {
-  color: #555;
-  margin-bottom: 1.5rem;
-}
+.registration-card h2 { font-size: 1.6rem; color: var(--navy); }
+.registration-card p { color: #555; margin-bottom: 1.5rem; }
 
 /* Form fields */
-.form-field {
-  margin-bottom: 1rem;
-  text-align: left;
-}
-.form-field label {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
+.form-field { margin-bottom: 1rem; text-align: left; }
+.form-field label { font-weight: 600; font-size: 0.95rem; }
 .form-field input {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 14px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
+  width: 100%; padding: 0.9rem 1rem; border-radius: 14px; border: 1px solid #d1d5db; font-size: 1rem;
 }
 .form-field input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(220,38,38,0.2);
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(220,38,38,0.2);
 }
-.optional {
-  font-size: 0.8rem;
-  color: gray;
-}
+.optional { font-size: 0.8rem; color: gray; }
 
 /* Buttons */
 .register-btn {
-  width: 100%;
-  padding: 1rem;
-  background: var(--primary);
-  color: var(--white);
-  border: none;
-  border-radius: 14px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  transition: var(--transition);
+  width: 100%; padding: 1rem; background: var(--primary); color: var(--white);
+  border: none; border-radius: 14px; font-weight: 700; font-size: 1.05rem; cursor: pointer;
+  margin-bottom: 1rem; transition: var(--transition);
 }
 .register-btn:hover {
   background: var(--primary-dark);
@@ -119,40 +91,36 @@
 
 /* Google Button */
 .google-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  width: 100%;
-  padding: 1rem;
-  background: #fff;
-  border: 1px solid #dadce0;
-  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+  width: 100%; padding: 1rem; background: #fff; border: 1px solid #dadce0; border-radius: 14px;
+  font-weight: 600; cursor: pointer; transition: background 0.25s ease;
+}
+.google-btn img { width: 24px; height: 24px; }
+.google-btn:hover { background: #f8f9fa; }
+
+/* ---------------- FLASH BANNER ---------------- */
+.flash-banner {
+  background: #fff7ed;           /* warm subtle */
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  border-radius: 12px;
+  padding: 10px 14px;
   font-weight: 600;
-  cursor: pointer;
-  transition: background 0.25s ease;
+  box-shadow: 0 4px 14px rgba(250, 146, 45, 0.08);
 }
-.google-btn img {
-  width: 24px;
-  height: 24px;
-}
-.google-btn:hover {
-  background: #f8f9fa;
+.fade-in { animation: flashFadeIn 450ms ease; }
+@keyframes flashFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ---------------- THANK YOU POPUP ---------------- */
 .thank-you-popup {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.6);
-  z-index: 999;
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.6); z-index: 999;
 }
-.thank-you-popup.hidden {
-  display: none;
-}
+.thank-you-popup.hidden { display: none; }
+
 .popup-card {
   background: var(--white);
   padding: 2rem;
@@ -160,10 +128,26 @@
   box-shadow: var(--shadow);
   max-width: 420px;
   text-align: center;
+  transform-origin: center;
 }
-.popup-card h3 {
-  color: var(--primary);
+
+.scale-in { animation: scaleIn 380ms cubic-bezier(.2,.8,.2,1); }
+@keyframes scaleIn {
+  from { transform: scale(.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
+
+/* 👍 animated thumb */
+.thumb-anim {
+  font-size: 3rem;
+  line-height: 1;
+  animation: thumbBounce 900ms ease infinite alternate;
+}
+@keyframes thumbBounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-6px); }
+}
+
 .close-btn {
   margin-top: 1rem;
   background: var(--primary);
@@ -174,6 +158,4 @@
   border: none;
   transition: var(--transition);
 }
-.close-btn:hover {
-  background: var(--primary-dark);
-}
+.close-btn:hover { background: var(--primary-dark); }

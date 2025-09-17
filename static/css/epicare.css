@@ -1,0 +1,102 @@
+/* ================== EPICARE CHAT STYLES ================== */
+
+body {
+  line-height: 1.5;
+}
+
+/* Sidebar (Conversations) */
+aside {
+  min-width: 160px;
+  max-width: 200px;
+}
+.conv-btn {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  text-align: left;
+  color: #f9fafb;
+  font-size: 0.85rem;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.conv-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(2px);
+}
+
+/* Chat window */
+#chat-window {
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Messages */
+#messages {
+  display: flex;
+  flex-direction: column;
+}
+#messages .bot-msg {
+  background: linear-gradient(to right, #dc2626, #f43f5e);
+  color: #fff;
+}
+#messages .user-msg {
+  background: #ffffff;
+  color: #111827;
+  align-self: flex-end;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  max-width: 65%;
+}
+
+/* Typing dots animation */
+#typing-indicator .dot {
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  display: inline-block;
+  animation: blink 1.4s infinite both;
+}
+#typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+#typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; }
+  40% { opacity: 1; }
+}
+
+/* Input bar */
+.chat-input {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  padding: 0.4rem 0.6rem;
+}
+.chat-input input {
+  min-height: 40px;
+}
+.icon-btn {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  background: transparent;
+  color: #f9fafb;
+  transition: background 0.2s ease;
+}
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.send-btn {
+  padding: 0.55rem;
+  border-radius: 9999px;
+  background: #dc2626;
+  color: #fff;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.send-btn:hover {
+  background: #b91c1c;
+  transform: translateX(2px);
+}
+
+/* Footer */
+footer img {
+  border-radius: 0.25rem;
+}
