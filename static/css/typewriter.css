@@ -1,0 +1,19 @@
+/* ==============================
+   Typewriter Animation
+   ============================== */
+.typewriter {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f2b46; /* navy */
+  min-height: 24px; /* prevents jumpy layout */
+  border-right: 2px solid #dc2626; /* red cursor */
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: blink-caret 0.7s step-end infinite;
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: #dc2626; }
+}
