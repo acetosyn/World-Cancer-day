@@ -35,24 +35,84 @@ def send_registration_emails(reg):
         print("❌ Email not sent: missing SMTP config in .env")
         return False
 
-    subject_admin = f"New Registration: {reg.get('full_name')}"
-    body_admin = (
-        f"📥 New registration received:\n\n"
-        f"Name: {reg.get('full_name')}\n"
-        f"Phone: {reg.get('phone')}\n"
-        f"Email: {reg.get('email')}\n"
-        f"Address: {reg.get('address') or 'N/A'}"
-    )
+    # ------------------- ADMIN EMAIL -------------------
+    subject_admin = f"📥 New User Registration: {reg.get('full_name')}"
+    body_admin = f"""
+A new user has successfully registered via the Epiconsult Clinic & Diagnostics website
+as part of our World Cancer Day initiative.
 
-    subject_user = "✅ Thanks for registering with Epiconsult"
-    body_user = (
-        f"Hi {reg.get('full_name')},\n\n"
-        "Thank you for registering with Epiconsult on World Cancer Day.\n"
-        "We will contact you shortly.\n\n"
-        "– The Epiconsult Team"
-    )
+Please find the user details below:
 
-    # Build messages
+------------------------------------
+👤 Full Name: {reg.get('full_name')}
+📞 Phone: {reg.get('phone')}
+📧 Email: {reg.get('email')}
+------------------------------------
+
+This registration is part of our ongoing efforts to provide healthcare awareness,
+diagnostic services, and community engagement.
+
+Kindly follow up as appropriate.
+
+Best regards,
+
+HAKEEM TOSIN  
+Information & Technology Officer (ITO™)  
+Epiconsult Clinic & Diagnostics Center  
+
+📍 33, Abidjan Street, Wuse, Zone 3, Abuja  
+📞 Tel: 08036691680, 09125662818  
+✉ Email: tosinhakeem@epidiagnostics.com, tosinhakeem4@gmail.com  
+🌐 Website: www.epidiagnostics.com  
+
+-------------------------------------------------------------
+This email and any file transmitted with it are confidential
+and intended solely for the use of the individual or entity 
+to whom they are addressed. If you have received this email in 
+error, you should not disseminate, distribute or copy this email. 
+Kindly notify the sender immediately by email and delete it from 
+your system. Disclosing, copying, distributing, or taking any 
+action in reliance on the contents of this information is 
+strictly prohibited.
+-------------------------------------------------------------
+"""
+
+    # ------------------- USER EMAIL -------------------
+    subject_user = "✅ Thank you for registering with Epiconsult"
+    body_user = f"""
+Hi {reg.get('full_name')},
+
+Thank you for registering with Epiconsult as part of our World Cancer Day initiative. 
+We truly appreciate your interest and commitment to better health. Your registration 
+ensures that you will be the first to receive updates on our programs, diagnostic 
+services, and community health efforts.
+
+Our team will review your information and contact you shortly to provide the next steps 
+and any additional details you may require. In the meantime, please feel free to reach out 
+to us if you have any urgent questions.
+
+Warm regards,  
+EPICONSULT TEAM ITO  
+Epiconsult Clinic & Diagnostics Center  
+
+📍 33, Abidjan Street, Wuse, Zone 3, Abuja  
+📞 Tel: 07037765000, 09139374672  
+✉ Email: epiconsultdiagnostics@gmail.com, epiconsultdiagnostics1@gmail.com  
+🌐 Website: www.epidiagnostics.com  
+
+-------------------------------------------------------------
+This email and any file transmitted with it are confidential 
+and intended solely for the use of the individual or entity 
+to whom they are addressed. If you have received this email in 
+error, you should not disseminate, distribute or copy this email. 
+Kindly notify the sender immediately by email and delete it from 
+your system. Disclosing, copying, distributing, or taking any 
+action in reliance on the contents of this information is 
+strictly prohibited.
+-------------------------------------------------------------
+"""
+
+    # ------------------- SEND EMAILS -------------------
     msg_admin = MIMEText(body_admin)
     msg_admin["Subject"] = subject_admin
     msg_admin["From"] = email_from

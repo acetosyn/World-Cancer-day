@@ -31,3 +31,8 @@ ENV/
 # Ignore system files
 .DS_Store
 Thumbs.db
+
+# Backups
+users.json
+users.xlsx
+

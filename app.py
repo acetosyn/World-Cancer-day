@@ -30,13 +30,13 @@ def register():
         return jsonify({"error": err}), 400
 
     try:
-        # 2. Save to Supabase registrations table
+        # 2. Save to Supabase (may raise ValueError for duplicates)
         save_registration(data)
 
-        # 3. Attempt to send emails
+        # 3. Send emails
         email_sent = send_registration_emails(data)
 
-        # 4. Log email status into Supabase
+        # 4. Log email status
         log_email_status(
             registration_email=data["email"],
             status="sent" if email_sent else "failed",
@@ -45,14 +45,31 @@ def register():
 
         return jsonify({"success": True, "message": "Registration successful"}), 201
 
-    except Exception as e:
-        # Log error to email_logs too
+    except ValueError as ve:
+        # Duplicate user gracefully handled
         log_email_status(
             registration_email=data.get("email", "unknown"),
             status="failed",
-            error_message=str(e)
+            error_message=str(ve)
         )
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": (
+                "⚠️ This email is already registered with us.\n"
+                "Please use a different email address, or kindly await our follow-up.\n"
+                "Thank you for choosing Epiconsult."
+            )
+        }), 409
+
+    except Exception as e:
+        # Other unexpected errors
+        error_msg = str(e)
+        log_email_status(
+            registration_email=data.get("email", "unknown"),
+            status="failed",
+            error_message=error_msg
+        )
+        return jsonify({"error": error_msg}), 500
+
 
 
 @app.route("/epicare")

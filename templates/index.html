@@ -28,8 +28,9 @@
   </script>
 
   <!-- Global + Page Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/typewriter.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}">
 </head>
 <body class="font-poppins text-gray-800">
@@ -178,19 +179,20 @@
   </div>
 </section>
 
-
 <!-- Registration Section -->
 <section id="registration" class="py-16 px-4">
   <div class="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8">
     <h2 class="text-2xl font-bold text-navy mb-2">Register for World Cancer Day</h2>
     <p class="text-gray-600 mb-4">Sign up now to receive free offers and updates from Epiconsult.</p>
 
-    <!-- 🔔 Rotating flash message (every 10s) -->
+    <!-- 🖊️ Dynamic Typewriter -->
+    <p id="registration-typewriter" class="typewriter mb-6"></p>
+
+    <!-- 🔔 Flash messages will auto-appear here -->
     <div id="flash-message"
-         class="flash-banner mb-6"
-         role="status"
-         aria-live="polite">
-      <!-- JS fills this -->
+         class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 
+         bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[1000] 
+         transition-opacity duration-500 opacity-0">
     </div>
 
     <form id="cancerDayForm" class="space-y-5">
@@ -209,13 +211,22 @@
         <input type="email" id="email" name="email" required
                class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
       </div>
-      <button type="submit"
-              class="w-full bg-navy text-white py-2 rounded-lg hover:bg-redbrand transition">
-        Register Now
+
+      <button type="submit" id="registerBtn"
+              class="w-full bg-navy text-white py-2 rounded-lg hover:bg-redbrand transition flex items-center justify-center">
+        <span class="btn-text">Register Now</span>
       </button>
+
+      <!-- Inline loader (hidden by default) -->
+      <div id="buttonLoader" class="hidden flex justify-center mt-3">
+        <div class="loading-spinner-small"></div>
+      </div>
     </form>
   </div>
 </section>
+
+
+
 
 <!-- 🎉 Thank You Popup (animated) -->
 <div id="thankYouPopup" class="thank-you-popup hidden" aria-modal="true" role="dialog">
@@ -223,12 +234,12 @@
     <div class="thumb-anim" aria-hidden="true">👍</div>
     <h3 class="text-xl font-extrabold mt-3">Thanks for registering with Epiconsult!</h3>
     <p class="text-gray-600 mt-1">You will be contacted shortly.</p>
-
     <button id="closePopupBtn" class="close-btn mt-4" aria-label="Close">
       Close
     </button>
   </div>
 </div>
+
 
 
     </section>
@@ -268,9 +279,11 @@
     });
   </script>
   <script type="module" src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/flash.js') }}"></script>
+     <script type="module" src="{{ url_for('static', filename='js/typewriter.js') }}"></script>
   <script type="module" src="{{ url_for('static', filename='js/epicare.js') }}"></script>
-  <script type="module" src="{{ url_for('static', filename='js/flash.js') }}"></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
+
+
 </body>
 </html>
 

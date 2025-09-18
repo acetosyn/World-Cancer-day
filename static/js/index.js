@@ -18,107 +18,94 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 800);
   }
 
-  // ---------------- FLASH MESSAGE (every 10s) ----------------
-  const flashEl = document.getElementById("flash-message");
-  const flashMessages = [
-    "ℹ️ Please double-check your name, email, and phone — accurate details help us contact you quickly.",
-    "✅ Use an active phone number and inbox you check often to avoid delays.",
-    "🔐 Your details are safe with us and used only for your registration follow-up.",
-  ];
-  if (flashEl) {
-    let idx = 0;
-    const showFlash = () => {
-      flashEl.classList.remove("fade-in");
-      void flashEl.offsetWidth; // restart animation
-      flashEl.textContent = flashMessages[idx % flashMessages.length];
-      flashEl.classList.add("fade-in");
-      idx++;
-    };
-    showFlash();
-    setInterval(showFlash, 10000);
-  }
-
   // ---------------- REGISTRATION FORM ----------------
-  const form = document.getElementById("cancerDayForm");
-  const popup = document.getElementById("thankYouPopup");
-  const closeBtn = document.getElementById("closePopupBtn");
+const form = document.getElementById("cancerDayForm");
+const popup = document.getElementById("thankYouPopup");
+const registerBtn = document.getElementById("registerBtn");
+const btnText = registerBtn?.querySelector(".btn-text");
 
-  function showThankYouCard() {
-    if (!popup) return;
-    popup.classList.remove("hidden");
-    const card = popup.querySelector(".popup-card");
-    if (card) {
-      card.classList.remove("scale-in");
-      void card.offsetWidth;
-      card.classList.add("scale-in");
-    }
-    clearTimeout(popup._autoTimer);
-    popup._autoTimer = setTimeout(() => {
-      popup.classList.add("hidden");
-    }, 5000);
+function setButtonLoading(isLoading) {
+  if (!registerBtn || !btnText) return;
+
+  if (isLoading) {
+    registerBtn.classList.add("loading");
+    btnText.innerHTML = `<span class="loading-spinner"></span> Registering...`;
+    registerBtn.disabled = true;
+  } else {
+    registerBtn.classList.remove("loading");
+    btnText.textContent = "Register Now";
+    registerBtn.disabled = false;
+  }
+}
+
+function showThankYouCard(data) {
+  if (!popup) return;
+  popup.classList.remove("hidden");
+
+  const card = popup.querySelector(".popup-card");
+  if (card) {
+    card.innerHTML = `
+      <div class="thumb-anim">👍</div>
+      <h3 class="text-xl font-bold mt-2">Thanks for registering!</h3>
+      <p class="mt-2">Hi <strong>${data.full_name}</strong>,</p>
+      <p>We’ve received your registration with the email <strong>${data.email}</strong> and phone <strong>${data.phone}</strong>.</p>
+      <p class="mt-2">Our team will contact you shortly.</p>
+      <button id="closePopupBtn" class="close-btn">Close</button>
+    `;
+
+    card.classList.remove("scale-in");
+    void card.offsetWidth;
+    card.classList.add("scale-in");
   }
 
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(form).entries());
+  // Bind close button
+  const closeBtnNew = document.getElementById("closePopupBtn");
+  closeBtnNew?.addEventListener("click", () => {
+    popup.classList.add("hidden");
+  });
+}
 
-      try {
-        const response = await fetch("/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
 
-        if (response.ok) {
-          showThankYouCard();
-          form.reset();
+    setButtonLoading(true); // show button spinner
+
+    try {
+      const response = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      setButtonLoading(false); // reset button state
+
+      if (response.ok) {
+        showThankYouCard(data);
+        form.reset();
+      } else {
+        if (result.error && result.error.toLowerCase().includes("already registered")) {
+          window.showFlash(
+            `⚠️ This email is already registered with us.
+Please use a different email address, or kindly await our follow-up.
+Thank you for choosing Epiconsult.`,
+            "error"
+          );
         } else {
-          epiconsultAlert("⚠ Registration failed. Please try again.");
+          window.showFlash("⚠ Registration failed. Try again.", "error");
         }
-      } catch (err) {
-        console.error(err);
-        epiconsultAlert("⚠ Something went wrong.");
       }
-    });
-  }
-
-  closeBtn?.addEventListener("click", () => {
-    popup?.classList.add("hidden");
+    } catch (err) {
+      console.error(err);
+      setButtonLoading(false);
+      window.showFlash("⚠ Something went wrong. Please retry.", "error");
+    }
   });
+}
 
-  // ---------------- CUSTOM TOAST ALERT ----------------
-  function epiconsultAlert(message) {
-    const toast = document.createElement("div");
-    toast.className =
-      "fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow-lg z-[9999] transition-opacity duration-500 opacity-0";
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    requestAnimationFrame(() => {
-      toast.classList.remove("opacity-0");
-      toast.classList.add("opacity-100");
-    });
-
-    setTimeout(() => {
-      toast.classList.remove("opacity-100");
-      toast.classList.add("opacity-0");
-      setTimeout(() => toast.remove(), 500);
-    }, 4000);
-  }
-
-  // ---------------- HEADER LINKS “STAY TUNED” ----------------
-  document.querySelectorAll("nav a, nav button").forEach((el) => {
-    el.addEventListener("click", (e) => {
-      const href = el.getAttribute("href") || "";
-      const text = el.textContent.trim().toLowerCase();
-
-      if (!href.startsWith("#") && text !== "home" && text !== "epiconsult") {
-        e.preventDefault();
-        epiconsultAlert("Stay Tuned – Epiconsult website is coming soon!");
-      }
-    });
-  });
 
   // ---------------- POSTER AUTO-ZOOM LOOP ----------------
   const posters = document.querySelectorAll(".poster-card.big");
@@ -150,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------- POSTER VIEWER ----------------
-  // Create viewer container dynamically
   const viewer = document.createElement("div");
   viewer.id = "posterViewer";
   viewer.style.position = "fixed";
@@ -186,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     viewerImg.src = "";
   });
 
-  // Close when clicking background (not image)
   viewer.addEventListener("click", (e) => {
     if (e.target === viewer) {
       viewer.style.display = "none";
