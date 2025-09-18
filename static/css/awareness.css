@@ -1,0 +1,124 @@
+/* ================= AWARENESS CARDS ================= */
+.awareness-wrapper {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto 3rem auto; /* tightened bottom space */
+  overflow: hidden; /* hides overflow when sliding */
+  padding: 0 1rem;
+}
+
+.awareness-slider {
+  display: flex;
+  transition: transform 0.7s ease-in-out; /* smooth horizontal slide */
+}
+
+.awareness-card {
+  flex: 0 0 32%; /* 3 per row desktop */
+  height: 420px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.awareness-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.45), rgba(0,0,0,0.1));
+}
+
+.awareness-text {
+  position: relative;
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  line-height: 1.6;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+/* Navigation */
+.awareness-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.85);
+  color: #333;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background 0.3s;
+}
+.awareness-nav:hover { background: #fff; }
+.awareness-nav.prev { left: 10px; }
+.awareness-nav.next { right: 10px; }
+
+/* Dots */
+.awareness-dots {
+  text-align: center;
+  margin-top: 1rem;
+}
+.awareness-dots span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 5px;
+  background: #bbb;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.awareness-dots span.active {
+  background: var(--primary);
+}
+
+/* Hover effects */
+.awareness-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  transition: transform 0.4s ease;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .awareness-card { flex: 0 0 48%; } /* 2 per row */
+}
+@media (max-width: 768px) {
+  .awareness-card { flex: 0 0 90%; margin: 0 auto; } /* 1 per row */
+}
+@media (max-width: 500px) {
+  .awareness-card { height: 380px; flex: 0 0 95%; }
+}
+
+/* ================= SERVICE CARDS (unchanged) ================= */
+.service-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
+}
+.service-card:hover {
+  transform: translateY(-6px) scale(1.03);
+}
+.service-text {
+  font-weight: 700;
+  color: #333;
+}
+
+

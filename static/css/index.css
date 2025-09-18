@@ -9,7 +9,7 @@
   --transition: all 0.3s ease;
 }
 
-/* Utility colors (used by your HTML classes) */
+/* Utility colors */
 .text-navy { color: var(--navy); }
 .bg-navy { background-color: var(--navy); }
 
@@ -32,8 +32,6 @@
 .hero-text {
   text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
-
-/* Hero Buttons Animation (on page load) */
 .hero-buttons {
   opacity: 0;
   transform: translateY(20px);
@@ -66,22 +64,34 @@
 .registration-card h2 { font-size: 1.6rem; color: var(--navy); }
 .registration-card p { color: #555; margin-bottom: 1.5rem; }
 
-/* Form fields */
 .form-field { margin-bottom: 1rem; text-align: left; }
 .form-field label { font-weight: 600; font-size: 0.95rem; }
 .form-field input {
-  width: 100%; padding: 0.9rem 1rem; border-radius: 14px; border: 1px solid #d1d5db; font-size: 1rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
 }
 .form-field input:focus {
-  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(220,38,38,0.2);
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.2);
 }
 .optional { font-size: 0.8rem; color: gray; }
 
-/* Buttons */
 .register-btn {
-  width: 100%; padding: 1rem; background: var(--primary); color: var(--white);
-  border: none; border-radius: 14px; font-weight: 700; font-size: 1.05rem; cursor: pointer;
-  margin-bottom: 1rem; transition: var(--transition);
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: var(--transition);
 }
 .register-btn:hover {
   background: var(--primary-dark);
@@ -89,18 +99,26 @@
   box-shadow: 0 6px 18px rgba(220, 38, 38, 0.25);
 }
 
-/* Google Button */
 .google-btn {
-  display: flex; align-items: center; justify-content: center; gap: 0.8rem;
-  width: 100%; padding: 1rem; background: #fff; border: 1px solid #dadce0; border-radius: 14px;
-  font-weight: 600; cursor: pointer; transition: background 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
 }
 .google-btn img { width: 24px; height: 24px; }
 .google-btn:hover { background: #f8f9fa; }
 
 /* ---------------- FLASH BANNER ---------------- */
 .flash-banner {
-  background: #fff7ed;           /* warm subtle */
+  background: #fff7ed;
   border: 1px solid #fed7aa;
   color: #9a3412;
   border-radius: 12px;
@@ -116,11 +134,12 @@
 
 /* ---------------- THANK YOU POPUP ---------------- */
 .thank-you-popup {
-  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.6); z-index: 999;
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
 }
 .thank-you-popup.hidden { display: none; }
-
 .popup-card {
   background: var(--white);
   padding: 2rem;
@@ -130,14 +149,11 @@
   text-align: center;
   transform-origin: center;
 }
-
 .scale-in { animation: scaleIn 380ms cubic-bezier(.2,.8,.2,1); }
 @keyframes scaleIn {
   from { transform: scale(.9); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
-
-/* 👍 animated thumb */
 .thumb-anim {
   font-size: 3rem;
   line-height: 1;
@@ -147,7 +163,6 @@
   from { transform: translateY(0); }
   to   { transform: translateY(-6px); }
 }
-
 .close-btn {
   margin-top: 1rem;
   background: var(--primary);
@@ -160,23 +175,19 @@
 }
 .close-btn:hover { background: var(--primary-dark); }
 
-
-
 /* ---------------- POSTERS ---------------- */
 .poster-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* adjusted */
   gap: 2rem;
 }
-
 .poster-card.big {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  height: 500px; /* bigger cards */
+  height: 500px;
 }
-
 .poster-card.big img.poster-img {
   width: 100%;
   height: 100%;
@@ -184,13 +195,24 @@
   transform: scale(1);
   transition: transform 4s ease;
 }
-
-/* Auto zoom effect when active */
 .poster-card.big.active img.poster-img {
-  transform: scale(1.2); /* zoom in */
+  transform: scale(1.2);
 }
 
-
+/* 🔥 Mobile Fix */
+@media (max-width: 768px) {
+  .poster-gallery {
+    grid-template-columns: 1fr; /* force single column */
+  }
+  .poster-card.big {
+    height: auto;
+  }
+  .poster-card.big img.poster-img {
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+  }
+}
 
 /* ---------------- BUTTON LOADING SPINNER ---------------- */
 .loading-spinner {
@@ -204,15 +226,11 @@
   vertical-align: middle;
   margin-right: 6px;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 button.loading {
   opacity: 0.8;
   cursor: not-allowed;
 }
-
-

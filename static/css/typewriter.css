@@ -1,10 +1,8 @@
-/* ==============================
-   Typewriter Animation
-   ============================== */
+/* ---------------- TYPEWRITER FIX ---------------- */
 .typewriter {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #0f2b46; /* navy */
+  color: #0f2b46;
   min-height: 24px; /* prevents jumpy layout */
   border-right: 2px solid #dc2626; /* red cursor */
   white-space: nowrap;
@@ -16,4 +14,13 @@
 @keyframes blink-caret {
   from, to { border-color: transparent; }
   50% { border-color: #dc2626; }
+}
+
+/* 🔥 Mobile Fix: wrap long text inside card */
+@media (max-width: 600px) {
+  .typewriter {
+    white-space: normal;   /* allow wrapping */
+    display: block;
+    word-break: break-word;
+  }
 }
