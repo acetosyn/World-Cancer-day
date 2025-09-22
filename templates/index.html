@@ -1,348 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>World Cancer Day - Epiconsult</title>
+{% extends "base.html" %}
 
-  <!-- Google Fonts + Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+{% block title %}Examination - EMIS Exam Portal{% endblock %}
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            navy: "#002F5E",
-            redbrand: "#dc2626",
-          },
-          fontFamily: {
-            poppins: ["Poppins", "system-ui", "sans-serif"],
-          },
-        },
-      },
-    };
-  </script>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/exam.css') }}">
+{% endblock %}
 
-  <!-- Global + Page Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/awareness.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/typewriter.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/hero.css') }}">
-</head>
-<body class="font-poppins text-gray-800">
+{% block content %}
+<main class="exam-page bg-gray-50 py-10 px-4 min-h-screen">
 
-<!-- ================= HEADER ================= -->
-<header class="bg-white/95 shadow sticky top-0 z-50">
-  <div class="container mx-auto flex justify-between items-center px-4 py-3">
-    
-    <!-- Logo (clickable) -->
-    <a href="{{ url_for('index') }}" class="flex items-center space-x-3">
-      <img src="{{ url_for('static', filename='images/logo.jpeg') }}"
-           alt="Epiconsult Logo"
-           class="h-12 w-auto object-contain">
-      <div>
-        <h1 class="font-bold text-2xl text-redbrand">Epiconsult</h1>
-        <h2 class="font-semibold text-lg text-navy">Clinic & Diagnostics</h2>
-        <p class="text-gray-600 italic text-sm">...a reference point in diagnostics</p>
-      </div>
-    </a>
+  <!-- Exam Header -->
+  <section class="max-w-5xl mx-auto text-center mb-10">
+    <h1 class="text-3xl md:text-4xl font-bold text-navy mb-2">Welcome to Your Examination</h1>
+    <p class="text-gray-600">Please follow the instructions carefully and attempt all questions.</p>
+  </section>
 
-    <!-- Navigation -->
-    <nav class="hidden md:flex space-x-8 text-navy font-medium">
-      <a href="#" class="hover:text-redbrand" data-nav="home">Home</a>
-      <a href="#" class="hover:text-redbrand" data-nav="about">About</a>
-      <a href="#" class="hover:text-redbrand" data-nav="contact">Contact</a>
-     <a href="{{ url_for('epicare') }}" class="hover:text-redbrand">Epicare Assistant</a>
-    </nav>
-  </div>
-</header>
-
-
-<!-- ================= HERO SLIDER ================= -->
-<section class="relative overflow-hidden">
-  <div class="h-[420px] relative">
-    {% for i in range(1,8) %}
-    <div class="hero-slide {% if loop.first %}active{% endif %}">
-      <img src="{{ url_for('static', filename='images/' ~ i ~ '.jpg') }}"
-           alt="Cancer Awareness {{ i }}"
-           class="w-full h-full object-cover">
-    </div>
-    {% endfor %}
-
-    <!-- Overlay Content (Permanent) -->
-    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4 z-20">
-      <h1 class="text-3xl md:text-5xl font-bold mb-3 hero-text">World Cancer Day</h1>
-      <p class="max-w-2xl text-lg md:text-xl mb-6">
-        Join Epiconsult in spreading awareness and providing access to early diagnosis and care.
-      </p>
-
-      <!-- Buttons (Permanent, animated on load) -->
-      <div class="flex flex-col sm:flex-row gap-4 hero-buttons">
-        <a href="#registration"
-           class="bg-redbrand hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition text-center">
-          Register
-        </a>
-      <!-- Hero Section Button -->
-      <a href="{{ url_for('epicare') }}"
-        class="bg-navy hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition text-center">
-        Epicare Assistant
-      </a>
-        <a href="#video"
-           class="bg-white hover:bg-gray-200 text-navy font-semibold px-6 py-3 rounded-lg shadow-lg transition text-center">
-          Watch Video
-        </a>
+  <!-- Exam Instructions Card -->
+  <section id="exam-instructions" class="max-w-4xl mx-auto mb-10">
+    <div class="bg-white rounded-2xl shadow-lg p-8 zoom-card">
+      <h2 class="text-2xl font-semibold text-navy mb-4">Exam Instructions</h2>
+      <ul class="list-disc list-inside text-gray-700 text-left mb-6 space-y-2" id="instructions-list">
+        <li>Read each question carefully before answering.</li>
+        <li>You can flag questions to review later.</li>
+        <li>Keep an eye on the timer displayed at the top.</li>
+        <li>Once submitted, answers cannot be changed.</li>
+      </ul>
+      <div class="flex justify-center">
+        <button id="start-exam-btn"
+          class="bg-skyblue hover:bg-skyblueDark text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition">
+          Start Exam
+        </button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- Active Question Card -->
+  <section id="question-container" class="max-w-4xl mx-auto hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 zoom-card">
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="question-text" class="text-xl font-semibold text-navy">Question text will appear here</h2>
+        <button id="flag-btn"
+          class="bg-white border border-skyblue text-skyblue px-4 py-1 rounded-lg hover:bg-skyblue hover:text-white transition">
+          🚩 Flag
+        </button>
+      </div>
+      <div id="options-container" class="grid gap-4">
+        <!-- Options injected by JS -->
+      </div>
+      <div id="answer-feedback" class="mt-4 hidden p-3 rounded-lg font-semibold"></div>
+    </div>
+  </section>
 
-<!-- ================= BACKGROUND IMAGE START ================= -->
-<main class="bg-cover bg-fixed bg-center"
-      style="background-image: url('{{ url_for('static', filename='images/background.jpg') }}')">
-
-<!-- Awareness Section -->
-<section class="py-12 px-4 relative">
-  <div class="max-w-3xl mx-auto mb-10 bg-white rounded-2xl shadow-lg p-8 text-center">
-    <h2 class="text-4xl font-extrabold text-red-600 tracking-wide mb-3">
-      Close the Care Gap
-    </h2>
-    <p class="text-lg font-medium text-blue-900 tracking-wide">
-      Your Health, Our Priority at Epiconsult
-    </p>
-  </div>
-</section>
-
-
-   <!-- Awareness Cards Slider -->
-<section class="px-4 relative -mt-6"> <!-- 🔥 negative margin reduces gap -->
-  <div class="awareness-wrapper">
-    <button class="awareness-nav prev" aria-label="Previous">&#10094;</button>
-    <div class="awareness-slider"></div>
-    <button class="awareness-nav next" aria-label="Next">&#10095;</button>
-  </div>
-  <div class="awareness-dots mt-4"></div>
-</section>
-
-<!-- Services Section -->
-<section class="py-12 px-4 relative">
-  <div class="max-w-4xl mx-auto mb-8 bg-white rounded-2xl shadow-lg p-8 text-center">
-    <h3 class="text-3xl font-extrabold text-red-600 tracking-wide mb-3">
-      Our Cancer Care Services
-    </h3>
-    <p class="text-lg font-medium text-blue-900 tracking-wide">
-      Comprehensive diagnostics and screening tailored for better outcomes
-    </p>
-  </div>
-
-  <!-- Services Grid -->
-  <div class="max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      <div class="service-card">
-        <i class="fa-solid fa-vial-circle-check text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">Tumor Marker Tests</p>
+  <!-- Exam Progress -->
+  <section id="progress-section" class="max-w-5xl mx-auto mt-10 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row justify-between items-center gap-6 zoom-card">
+      <div class="flex-1 text-center">
+        <p class="text-sm text-gray-600">Answered</p>
+        <span id="answered-count" class="text-2xl font-bold text-skyblue">0</span>
       </div>
-      <div class="service-card">
-        <i class="fa-solid fa-mars text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">PSA (Prostate)</p>
+      <div class="flex-1 text-center">
+        <p class="text-sm text-gray-600">Remaining</p>
+        <span id="remaining-count" class="text-2xl font-bold text-navy">0</span>
       </div>
-      <div class="service-card">
-        <i class="fa-solid fa-venus text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">CA 125 (Ovarian)</p>
+      <div class="flex-1 text-center">
+        <p class="text-sm text-gray-600">Flagged</p>
+        <span id="flagged-count" class="text-2xl font-bold text-red-500">0</span>
       </div>
-      <div class="service-card">
-        <i class="fa-solid fa-ribbon text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">CA 15-3 (Breast)</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-dna text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">Cytology & Histology</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-microscope text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">Pap Smear</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-syringe text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">FNAC</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-vials text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">Histology</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-x-ray text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">Imaging & Molecular Tests</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-virus text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">HPV Typing</p>
-      </div>
-      <div class="service-card">
-        <i class="fa-solid fa-flask text-red-600 text-3xl mb-3"></i>
-        <p class="service-text">Immunohistochemistry (IHC Panels)</p>
+      <div class="flex-1 text-center">
+        <p class="text-sm text-gray-600">Timer</p>
+        <span id="overall-timer" class="text-2xl font-bold text-gray-800">00:00</span>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-
-    <!-- Epicare Assistant Section -->
-    <section id="epicare" class="py-16 px-4 text-center bg-white/90">
-      <h2 class="text-3xl font-bold text-navy mb-4">Meet <span class="text-redbrand">Epicare</span> Assistant</h2>
-      <p class="max-w-2xl mx-auto text-gray-600 mb-8">Your virtual health companion. Get instant help and guidance.</p>
- <!-- Epicare Section Button -->
-<a href="{{ url_for('epicare') }}"
-   class="inline-block bg-redbrand text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-red-700 transition">
-  Try Epicare Assistant
-</a>
-    </section>
-
-<!-- Posters Section -->
-<section class="py-16 px-4 bg-white/95">
-  <h2 class="text-2xl font-bold text-center text-navy mb-10">Awareness Posters</h2>
-  <div class="poster-gallery max-w-6xl mx-auto">
-    <div class="poster-card big">
-      <img src="static/images/cancer1.png" alt="Cancer Poster 1" class="poster-img">
+  <!-- Exam Navigation -->
+  <section id="exam-navigation" class="max-w-4xl mx-auto mt-8 hidden">
+    <div class="flex justify-between items-center gap-4">
+      <button id="prev-btn" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg shadow hover:bg-gray-300 transition"
+        disabled>← Previous</button>
+      <button id="next-btn" class="bg-skyblue text-white px-6 py-2 rounded-lg shadow hover:bg-skyblueDark transition"
+        disabled>Next →</button>
+      <button id="end-exam-btn"
+        class="bg-red-500 text-white px-6 py-2 rounded-lg shadow hover:bg-red-700 transition">End Exam</button>
     </div>
-    <div class="poster-card big">
-      <img src="static/images/cancer2.png" alt="Cancer Poster 2" class="poster-img">
-    </div>
-    <div class="poster-card big">
-      <img src="static/images/cancer3.png" alt="Cancer Poster 3" class="poster-img">
-    </div>
-    <div class="poster-card big">
-      <img src="static/images/cancer4.jpg" alt="Cancer Poster 4" class="poster-img">
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- Video Section -->
-<section id="video" class="py-16 px-4 bg-white/95">
-  <h2 class="text-2xl font-bold text-center text-navy mb-10">Watch Our Awareness Video</h2>
-  <div class="max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
-    <div class="aspect-w-16 aspect-h-9">
-      <iframe class="w-full h-[480px]" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="World Cancer Day Awareness"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
-    </div>
-  </div>
-</section>
-
-<!-- Registration Section -->
-<section id="registration" class="py-16 px-4">
-  <div class="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8">
-    <h2 class="text-2xl font-bold text-navy mb-2">Register for World Cancer Day</h2>
-    <p class="text-gray-600 mb-4">Sign up now to receive free offers and updates from Epiconsult.</p>
-
-    <!-- 🖊️ Dynamic Typewriter -->
-    <p id="registration-typewriter" class="typewriter mb-6"></p>
-
-    <!-- 🔔 Flash messages will auto-appear here -->
-    <div id="flash-message"
-         class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 
-         bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[1000] 
-         transition-opacity duration-500 opacity-0">
-    </div>
-
-    <form id="cancerDayForm" class="space-y-5">
-      <div>
-        <label for="full-name" class="block text-sm font-medium">Full Name</label>
-        <input type="text" id="full-name" name="full_name" required
-               class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
+  <!-- Completion Card -->
+  <section id="exam-complete" class="max-w-4xl mx-auto mt-12 hidden">
+    <div class="bg-white rounded-2xl shadow-lg p-8 text-center zoom-card">
+      <h2 class="text-2xl font-bold text-navy mb-3">Exam Complete 🎉</h2>
+      <p class="text-gray-600 mb-6">Thank you for completing the examination.</p>
+      <div class="grid grid-cols-2 gap-6 mb-6">
+        <div class="p-4 bg-gray-50 rounded-lg shadow">
+          <p class="text-sm text-gray-600">Questions Answered</p>
+          <span id="final-answered" class="text-xl font-bold text-skyblue">0</span>
+        </div>
+        <div class="p-4 bg-gray-50 rounded-lg shadow">
+          <p class="text-sm text-gray-600">Time Taken</p>
+          <span id="final-time" class="text-xl font-bold text-navy">00:00</span>
+        </div>
       </div>
-      <div>
-        <label for="phone" class="block text-sm font-medium">Phone Number</label>
-        <input type="tel" id="phone" name="phone" required
-               class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
-      </div>
-      <div>
-        <label for="email" class="block text-sm font-medium">Email Address</label>
-        <input type="email" id="email" name="email" required
-               class="mt-1 w-full border rounded px-3 py-2 focus:ring-redbrand">
-      </div>
-
-      <button type="submit" id="registerBtn"
-              class="w-full bg-navy text-white py-2 rounded-lg hover:bg-redbrand transition flex items-center justify-center">
-        <span class="btn-text">Register Now</span>
-      </button>
-
-      <!-- Inline loader (hidden by default) -->
-      <div id="buttonLoader" class="hidden flex justify-center mt-3">
-        <div class="loading-spinner-small"></div>
-      </div>
-    </form>
-  </div>
-</section>
-
-
-
-
-<!-- 🎉 Thank You Popup (animated) -->
-<div id="thankYouPopup" class="thank-you-popup hidden" aria-modal="true" role="dialog">
-  <div class="popup-card scale-in">
-    <div class="thumb-anim" aria-hidden="true">👍</div>
-    <h3 class="text-xl font-extrabold mt-3">Thanks for registering with Epiconsult!</h3>
-    <p class="text-gray-600 mt-1">You will be contacted shortly.</p>
-    <button id="closePopupBtn" class="close-btn mt-4" aria-label="Close">
-      Close
-    </button>
-  </div>
-</div>
-
-
-
-    </section>
-  </main>
-
-   <!-- ================= FOOTER ================= -->
-  <footer class="bg-navy text-white py-12">
-    <div class="container mx-auto px-4 text-center">
-      <div class="flex flex-col items-center mb-6">
-        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" 
-             alt="Epiconsult Logo" 
-             class="h-12 w-auto object-contain mb-3">
-        <h3 class="font-bold text-xl">
-          <span class="text-redbrand">Epiconsult</span>
-          <span class="text-white"> Clinic & Diagnostics</span>
-        </h3>
-        <p class="text-gray-300 text-sm italic">...a reference point in diagnostics</p>
-      </div>
-      <p class="text-gray-400 mb-2">Committed to providing quality diagnostics and patient-centered care.</p>
-      <p class="text-gray-400 text-sm">© {{ current_year }} Epiconsult Diagnostics. All rights reserved.</p>
+      <button id="view-results-btn"
+        class="bg-skyblue text-white px-6 py-3 rounded-lg shadow-lg hover:bg-skyblueDark transition">View Results</button>
     </div>
-  </footer>
+  </section>
+</main>
+{% endblock %}
 
-<!-- ================= FLASH MESSAGE CONTAINER ================= -->
-<div id="flash-message" class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 
-    bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[1000] transition-opacity duration-500">
-  Stay tuned Epiconsult website coming soon
-</div>
-
-
-  <!-- Scripts -->
-  <script>
-    // Animate hero buttons on page load
-    window.addEventListener("load", () => {
-      const buttons = document.querySelector(".hero-buttons");
-      if (buttons) buttons.classList.add("visible");
-    });
-  </script>
-  <script type="module" src="{{ url_for('static', filename='js/index.js') }}"></script>
-      <script type="module" src="{{ url_for('static', filename='js/flash.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/awareness.js') }}"></script>
-     <script type="module" src="{{ url_for('static', filename='js/typewriter.js') }}"></script>
-  <script type="module" src="{{ url_for('static', filename='js/epicare.js') }}"></script>
-
-
-</body>
-</html>
-
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/exam.js') }}"></script>
+{% endblock %}

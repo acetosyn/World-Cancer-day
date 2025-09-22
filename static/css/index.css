@@ -1,236 +1,143 @@
-:root {
-  --primary: #dc2626;
-  --primary-dark: #b91c1c;
-  --navy: #0f2b46;
-  --light: #f9fafb;
-  --white: #ffffff;
-  --shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-  --radius: 18px;
-  --transition: all 0.3s ease;
-}
+{% extends "base.html" %}
 
-/* Utility colors */
-.text-navy { color: var(--navy); }
-.bg-navy { background-color: var(--navy); }
+{% block title %}Admin Dashboard - EMIS Exam Portal{% endblock %}
 
-/* ---------------- HERO SLIDER ---------------- */
-.hero-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 1s ease, transform 10s linear;
-}
-.hero-slide.active {
-  opacity: 1;
-  transform: scale(1.05);
-}
-.hero-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.hero-text {
-  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-}
-.hero-buttons {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 1s ease forwards 1s;
-}
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
 
-/* ---------------- ZOOM CARDS ---------------- */
-.zoom-effect {
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-.zoom-effect:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
-}
+{% block header_actions %}
+<div class="flex items-center space-x-4">
+  <span class="text-sm text-gray-600 font-medium">Admin Panel</span>
+  <button onclick="logout()" class="text-sm text-red-600 hover:text-red-800 font-medium">Logout</button>
+</div>
+{% endblock %}
 
-/* ---------------- REGISTRATION ---------------- */
-.registration-card {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 2rem;
-  max-width: 540px;
-  width: 100%;
-  text-align: center;
-  animation: floatUp 0.6s ease forwards;
-}
-.registration-card h2 { font-size: 1.6rem; color: var(--navy); }
-.registration-card p { color: #555; margin-bottom: 1.5rem; }
+{% block content %}
+<main class="bg-gray-50 py-10 px-4 min-h-screen">
+  <!-- Welcome -->
+  <section class="max-w-7xl mx-auto mb-10 text-center">
+    <h1 class="text-3xl md:text-4xl font-bold text-navy mb-2">Welcome, {{ session.username }}</h1>
+    <p class="text-gray-600">Manage exams, generate credentials, and monitor candidate activity.</p>
+  </section>
 
-.form-field { margin-bottom: 1rem; text-align: left; }
-.form-field label { font-weight: 600; font-size: 0.95rem; }
-.form-field input {
-  width: 100%;
-  padding: 0.9rem 1rem;
-  border-radius: 14px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-}
-.form-field input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(220,38,38,0.2);
-}
-.optional { font-size: 0.8rem; color: gray; }
+  <!-- Stats -->
+  <section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    <div class="stat-card zoom-card">
+      <p class="text-sm text-gray-600">Total Candidates</p>
+      <h2 id="totalStudents" class="text-3xl font-bold text-skyblue">0</h2>
+    </div>
+    <div class="stat-card zoom-card">
+      <p class="text-sm text-gray-600">Active Exams</p>
+      <h2 id="activeExams" class="text-3xl font-bold text-green-600">1</h2>
+    </div>
+    <div class="stat-card zoom-card">
+      <p class="text-sm text-gray-600">Pending Results</p>
+      <h2 id="pendingResults" class="text-3xl font-bold text-orange-500">0</h2>
+    </div>
+    <div class="stat-card zoom-card">
+      <p class="text-sm text-gray-600">Avg Score</p>
+      <h2 id="avgScore" class="text-3xl font-bold text-purple-600">--</h2>
+    </div>
+  </section>
 
-.register-btn {
-  width: 100%;
-  padding: 1rem;
-  background: var(--primary);
-  color: var(--white);
-  border: none;
-  border-radius: 14px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  transition: var(--transition);
-}
-.register-btn:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.25);
-}
+  <!-- Main Grid -->
+  <section class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Content -->
+    <div class="lg:col-span-2 space-y-8">
+      <!-- Generate Credentials -->
+      <div class="card">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-navy">Generate Candidate Credentials</h2>
+          <button onclick="clearAllCredentials()" class="text-sm text-red-600 hover:text-red-800">Clear All</button>
+        </div>
 
-.google-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  width: 100%;
-  padding: 1rem;
-  background: #fff;
-  border: 1px solid #dadce0;
-  border-radius: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.25s ease;
-}
-.google-btn img { width: 24px; height: 24px; }
-.google-btn:hover { background: #f8f9fa; }
+        <form id="credentialForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="form-label">Number of Candidates</label>
+            <input type="number" id="studentCount" min="1" max="100" value="5" class="form-input">
+          </div>
+          <div>
+            <label class="form-label">Username Prefix</label>
+            <input type="text" id="usernamePrefix" value="candidate" class="form-input">
+          </div>
+          <div>
+            <label class="form-label">Password Length</label>
+            <select id="passwordLength" class="form-input">
+              <option value="6">6 characters</option>
+              <option value="8" selected>8 characters</option>
+              <option value="10">10 characters</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="btn-primary w-full">Generate</button>
+          </div>
+        </form>
 
-/* ---------------- FLASH BANNER ---------------- */
-.flash-banner {
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  color: #9a3412;
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-weight: 600;
-  box-shadow: 0 4px 14px rgba(250, 146, 45, 0.08);
-}
-.fade-in { animation: flashFadeIn 450ms ease; }
-@keyframes flashFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+        <!-- Credentials Table -->
+        <div id="credentialsSection" class="hidden">
+          <div class="flex justify-between mb-4">
+            <h3 class="text-lg font-medium text-navy">Generated Credentials</h3>
+            <div class="space-x-2">
+              <button onclick="downloadCredentials()" class="btn-secondary">Download CSV</button>
+              <button onclick="printCredentials()" class="btn-secondary">Print</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-4 py-2 text-left">ID</th>
+                  <th class="px-4 py-2 text-left">Username</th>
+                  <th class="px-4 py-2 text-left">Password</th>
+                  <th class="px-4 py-2 text-left">Status</th>
+                </tr>
+              </thead>
+              <tbody id="credentialsTable" class="bg-white divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-/* ---------------- THANK YOU POPUP ---------------- */
-.thank-you-popup {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.6);
-  z-index: 999;
-}
-.thank-you-popup.hidden { display: none; }
-.popup-card {
-  background: var(--white);
-  padding: 2rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  max-width: 420px;
-  text-align: center;
-  transform-origin: center;
-}
-.scale-in { animation: scaleIn 380ms cubic-bezier(.2,.8,.2,1); }
-@keyframes scaleIn {
-  from { transform: scale(.9); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-.thumb-anim {
-  font-size: 3rem;
-  line-height: 1;
-  animation: thumbBounce 900ms ease infinite alternate;
-}
-@keyframes thumbBounce {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-6px); }
-}
-.close-btn {
-  margin-top: 1rem;
-  background: var(--primary);
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 10px;
-  cursor: pointer;
-  border: none;
-  transition: var(--transition);
-}
-.close-btn:hover { background: var(--primary-dark); }
+    <!-- Right Sidebar -->
+    <div class="space-y-8">
+      <!-- Quick Actions -->
+      <div class="card">
+        <h3 class="text-lg font-semibold text-navy mb-4">Quick Actions</h3>
+        <div class="space-y-3">
+          <button onclick="window.open('{{ url_for('user_login') }}','_blank')" class="btn-primary w-full">Candidate Login Link</button>
+          <button onclick="viewResults()" class="btn-secondary w-full">View All Results</button>
+          <button onclick="exportData()" class="btn-secondary w-full">Export Data</button>
+        </div>
+      </div>
 
-/* ---------------- POSTERS ---------------- */
-.poster-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* adjusted */
-  gap: 2rem;
-}
-.poster-card.big {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  height: 500px;
-}
-.poster-card.big img.poster-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1);
-  transition: transform 4s ease;
-}
-.poster-card.big.active img.poster-img {
-  transform: scale(1.2);
-}
+      <!-- Recent Activity -->
+      <div class="card">
+        <h3 class="text-lg font-semibold text-navy mb-4">Recent Activity</h3>
+        <div id="recentActivity" class="space-y-3 text-sm">
+          <p class="text-gray-500">No recent activity yet</p>
+        </div>
+      </div>
 
-/* 🔥 Mobile Fix */
-@media (max-width: 768px) {
-  .poster-gallery {
-    grid-template-columns: 1fr; /* force single column */
-  }
-  .poster-card.big {
-    height: auto;
-  }
-  .poster-card.big img.poster-img {
-    width: 100%;
-    height: auto;
-    max-height: 460px;
-  }
-}
+      <!-- System Status -->
+      <div class="card">
+        <h3 class="text-lg font-semibold text-navy mb-4">System Status</h3>
+        <ul class="space-y-2 text-sm">
+          <li class="flex justify-between"><span>Database</span><span class="badge-success">Online</span></li>
+          <li class="flex justify-between"><span>Exam Server</span><span class="badge-success">Running</span></li>
+          <li class="flex justify-between"><span>Storage</span><span class="badge-warning">85% Used</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
 
-/* ---------------- BUTTON LOADING SPINNER ---------------- */
-.loading-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid #fff;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  animation: spin 0.8s linear infinite;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-button.loading {
-  opacity: 0.8;
-  cursor: not-allowed;
-}
+<!-- Toast -->
+<div class="toast-container"></div>
+<div class="loading-overlay hidden"><div class="loading-spinner big"></div></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
